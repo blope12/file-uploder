@@ -1,0 +1,122 @@
+body{
+background-color: #ffe600;
+    margin: 0px;
+padding: 0px;
+}
+
+*{
+font-family: "Poetsen One", sans-serif;
+
+
+}
+
+.cun {
+position: relative;
+display: flex;
+justify-content: center;
+align-items: center;
+margin-top: 200px;
+flex-direction: column;
+background: #252525;
+height: auto;
+width: 400px;
+padding-bottom: 100px;
+margin-left: auto;
+margin-right: auto;
+border-radius: 20px;
+}
+
+h2{
+font-size: 30px;
+color: white;
+}
+.row {
+display: flex;
+justify-content: space-between; 
+align-items: center; 
+padding-bottom: 20px;
+border-bottom: 2px solid white;
+}
+.row button{
+
+margin-left: 20px;
+padding: 8px 16px;
+border-radius: 5px;
+cursor: pointer;
+font-size:14px ;
+border: none;
+background-color: #db00db;
+}
+
+.row button:hover{
+font-size:16px;
+}
+
+.row input{
+margin-left: 20px;
+border-radius: 5px;
+padding: 10px 20px;
+padding-right: 40px;
+border: none;
+}
+.row input::placeholder {
+    position: absolute;
+    left: 10px;
+}
+
+
+
+ul{
+display: flex;
+justify-content: center;
+list-style: none;
+width: 80%;
+flex-direction: column;
+margin-top: 30px;
+
+}
+
+
+.uls li{
+font-size: 20px;
+margin-bottom: 10px;
+background-color: rgba(255, 255, 255, 0.63);
+padding: 8px;
+border-radius: 10px;
+margin-right:0px;
+margin-left:-40px;
+padding-bottom: 10px;
+}
+
+.uls .del{ 
+margin-left: 0px;
+background-color: red;
+border:none;
+border-radius: 5px;
+padding: 6px;
+position: absolute;
+left: 63%;
+cursor: pointer;
+
+}
+.uls .mar{ 
+background-color: #db00db;
+border:none;
+border-radius: 5px;
+padding: 6px;
+position: absolute;
+left: 73%;
+cursor: pointer;
+
+}
+
+span{
+color: rgb(0, 0, 0);
+font-weight: 500;
+
+}
+
+
+i{
+font-size: 18px;
+}
