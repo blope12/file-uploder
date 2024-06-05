@@ -1,6 +1,7 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import TaskList from "./component/product";
+import { createRoot } from 'react-dom/client';
+import FileUploader from './/component/product';
+import '..//src/css.css'; // Import the CSS file
 
 
 
@@ -8,9 +9,8 @@ import TaskList from "./component/product";
 
 
 
+createRoot(document.getElementById('root')).render(<FileUploader />);
 
 
-
-ReactDOM.render(<TaskList/>, document.getElementById("root"));
 
 

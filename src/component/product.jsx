@@ -1,81 +1,92 @@
-import React, { useState, useEffect } from 'react';
-import './css.css'; 
+import React, { useState } from 'react';
+import { useDropzone } from 'react-dropzone';
 
+function FileUploader() {
+  const [files, setFiles] = useState([]);
 
+  const onDrop = (acceptedFiles) => {
+    const newFiles = acceptedFiles.map(file => ({
+      file,
+      preview: generatePreview(file)
+    }));
+    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+  };
 
-function TaskList() {
-  const [tasks, setTasks] = useState([]);
-  const [newTask, setNewTask] = useState('');
+  const handleDelete = (fileToDelete) => {
+    setFiles((prevFiles) => prevFiles.filter(({ file }) => file !== fileToDelete));
+  };
 
-  // Load tasks from localStorage on initial render
-  useEffect(() => {
-    const savedTasks = localStorage.getItem('tasks');
-    if (savedTasks) {
-      setTasks(JSON.parse(savedTasks));
+  const generatePreview = (file) => {
+    const fileType = file.type.split('/')[0];
+
+    if (fileType === 'image') {
+      return <img src={URL.createObjectURL(file)} alt={file.name} className="file-preview" />;
+    } else if (fileType === 'video') {
+      return <video controls src={URL.createObjectURL(file)} className="file-preview" />;
+    } else if (file.type === 'text/plain') {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setFiles(prevFiles => prevFiles.map(f => f.file === file ? { ...f, preview: <pre className="file-preview">{reader.result}</pre> } : f));
+      };
+      reader.readAsText(file);
+      return <pre className="file-preview">Loading text...</pre>;
+    } else {
+      return <p>Cannot preview this file type</p>;
     }
-  }, []);
-
-  // Save tasks to localStorage whenever tasks change
-  useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-  }, [tasks]);
-
-  const handleInputChange = (event) => {
-    setNewTask(event.target.value);
   };
 
-  const handleAddTask = () => {
-    if (newTask.trim() !== '') {
-      setTasks([...tasks, { id: Date.now(), text: newTask, completed: false }]);
-      setNewTask('');
-    }
+  const handleDeleteAll = () => {
+    setFiles([]);
   };
 
-  const handleDeleteTask = (taskId) => {
-    setTasks(tasks.filter(task => task.id !== taskId));
+  const handleDownloadAll = () => {
+    files.forEach(({ file }) => downloadFile(file));
   };
 
-  const toggleTaskCompletion = (taskId) => {
-    setTasks(tasks.map(task =>
-      task.id === taskId ? { ...task, completed: !task.completed } : task
-    ));
+  const downloadFile = (file) => {
+    const url = URL.createObjectURL(file);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = file.name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: 'image/*,video/*,text/plain',
+  });
 
   return (
-<div>
-  
-      <div className='cun'>
-                <h2 >Task List</h2>
-              <div className='row'>
-                    <input
-                      type="text"
-                      value={newTask}
-                      onChange={handleInputChange}
-                      placeholder="Add new task :"
-                    />
-                    <button onClick={handleAddTask}>Add</button>
-               </div>
-
-              <ul className='uls'>
-              {tasks.map(task => (
-                <li key={task.id}>
-                  <span style={{ textDecoration: task.completed ? 'line-through' : 'none' }}>
-                    {task.text}
-                  </span>
-                  <button className='del' onClick={() => handleDeleteTask(task.id)}><i class="fa-solid fa-trash"></i></button>
-                  <button className='mar' onClick={() => toggleTaskCompletion(task.id)}>
-                    {task.completed ? 'Incompleted' : 'Completed'}
-                  </button>
-                </li>
-              ))}
-            </ul>
+    <div>
+      <div {...getRootProps()} className="dropzone">
+        <input {...getInputProps()} />
+        <p>please drop your file here</p>
       </div>
-
-</div>
-
-
-
+      <ul className="file-list">
+        {files.map(({ file, preview }, index) => (
+          <li key={index} className="file-item">
+            <div>
+              <span>{file.name} - {file.size} bytes</span>
+            </div>
+            <div>
+              <div className="file-preview-container">{preview}</div>
+            </div>
+            <div className='btnn'>
+              <button onClick={(e) => { e.stopPropagation(); handleDelete(file); }} className="button">حذف</button>
+              <button onClick={(e) => { e.stopPropagation(); downloadFile(file); }} className="button">دانلود</button>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <div className="button-container">
+        <button onClick={handleDeleteAll} className="button">حذف همه</button>
+        <button onClick={handleDownloadAll} className="button">دانلود همه</button>
+      </div>
+    </div>
   );
 }
 
-export default TaskList;
+export default FileUploader;
